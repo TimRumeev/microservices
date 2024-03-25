@@ -2,9 +2,10 @@
 
 # compiled output
 dist
+/envs
 tmp
 /out-tsc
-
+.npmrc
 # dependencies
 node_modules
 

@@ -15,6 +15,9 @@
     ],
     "sharedGlobals": []
   },
+  "workspaceLayout": {
+    "libsDir": "libs"
+  },
   "plugins": [
     {
       "plugin": "@nx/webpack/plugin",

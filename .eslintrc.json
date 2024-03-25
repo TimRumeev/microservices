@@ -1,10 +1,18 @@
 {
   "root": true,
+  "parser": "@typescript-eslint/parser",
   "ignorePatterns": [
     "**/*"
   ],
   "plugins": [
-    "@nx"
+    "@nx",
+    "@typescript-eslint"
+  ],
+  "extends": [
+    "eslint:recommended",
+		"plugin:@typescript-eslint/eslint-recommended",
+		"plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
   ],
   "overrides": [
     {
@@ -28,6 +36,18 @@
                 ]
               }
             ]
+          }
+        ],
+        "prettier/prettier": [
+          "error",
+          {
+            "singleQuote": false,
+            "tabWidth": 4,
+            "semi": true,
+            "trailingComma": "all",
+            "bracketSpacing": true,
+            "printWidth": 100,
+            "endOfLine": "auto"
           }
         ]
       }
