@@ -17,6 +17,14 @@ export class UserRepository {
         return this.userModel.findOne({ email }).exec();
     }
 
+    async findUserById(id: string) {
+        return this.userModel.findById(id).exec();
+    }
+
+    async updateUser({ _id, ...rest }: UserEntity) {
+        return this.userModel.updateOne({ _id }, { $set: { ...rest } }).exec();
+    }
+
     async deleteUser(email: string) {
         this.userModel.deleteOne({ email }).exec();
     }
