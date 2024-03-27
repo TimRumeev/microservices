@@ -3,7 +3,7 @@ import { AuthService } from "./auth.service";
 import { AccountLogin, AccountRegister } from "@courses/contracts";
 import { RMQRoute, RMQValidate } from "nestjs-rmq";
 
-@Controller("auth")
+@Controller()
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
@@ -20,6 +20,6 @@ export class AuthController {
         if (!id) {
             throw new HttpException("User does not exists", 404);
         }
-        return this.authService.login(id, email);
+        return this.authService.login(id);
     }
 }
