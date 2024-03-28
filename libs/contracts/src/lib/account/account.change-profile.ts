@@ -9,7 +9,7 @@ export namespace AccountChangeProfile {
         id: string;
 
         @IsString()
-        user: Pick<IUser, "displayName">;
+        displayName: Pick<IUser, "displayName">;
     }
 
     export class Response {}

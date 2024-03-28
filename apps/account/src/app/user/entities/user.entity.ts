@@ -1,4 +1,4 @@
-import { IUser, IUserCourses, UserRole } from "@courses/interfaces";
+import { IUser, IUserCourses, PurchaseState, UserRole } from "@courses/interfaces";
 import { compare, genSalt, hash } from "bcryptjs";
 
 export class UserEntity implements IUser {
@@ -16,6 +16,36 @@ export class UserEntity implements IUser {
         this.role = user.role;
         this.passwordHash = user.passwordHash;
         this.courses = user.courses;
+    }
+
+    public deleteCourse(courseId: string) {
+        this.courses = this.courses.filter((c) => c._id !== courseId);
+    }
+
+    public updateCourseStatus(courseId: string, state: PurchaseState) {
+        const existsCourse = this.courses.find((c) => (c._id = courseId));
+        if (!existsCourse) {
+            this.courses.push({
+                courseId,
+                purchaseState: state,
+            });
+            return this;
+        }
+        if (state === PurchaseState.Canceled) {
+            this.deleteCourse(courseId);
+            return this;
+        }
+        // if (state === PurchaseState.Purchased) {
+        //     this.addCourse(courseId);
+        // }
+        this.courses = this.courses.map((c) => {
+            if ((c._id = courseId)) {
+                c.purchaseState = state;
+                return c;
+            }
+            return c;
+        });
+        return this;
     }
 
     public getPuiblicProfile() {
