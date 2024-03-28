@@ -1,4 +1,5 @@
-import { IUser, UserRole } from "@courses/interfaces";
+import { AccountChangedCourse } from "@courses/contracts";
+import { IDomainEvent, IUser, IUserCourses, PurchaseState, UserRole } from "@courses/interfaces";
 import { compare, genSalt, hash } from "bcryptjs";
 
 export class UserEntity implements IUser {
@@ -7,6 +8,8 @@ export class UserEntity implements IUser {
     email: string;
     passwordHash: string;
     role: UserRole;
+    courses?: IUserCourses[];
+    events: IDomainEvent[] = [];
 
     constructor(user: IUser) {
         this._id = user._id;
@@ -14,6 +17,53 @@ export class UserEntity implements IUser {
         this.email = user.email;
         this.role = user.role;
         this.passwordHash = user.passwordHash;
+        this.courses = user.courses;
+    }
+
+    public deleteCourse(courseId: string) {
+        this.courses = this.courses.filter((c) => c._id !== courseId);
+    }
+
+    public updateCourseStatus(courseId: string, state: PurchaseState) {
+        const existsCourse = this.courses.find((c) => (c._id = courseId));
+        if (!existsCourse) {
+            this.courses.push({
+                courseId,
+                purchaseState: state,
+            });
+            return this;
+        }
+        if (state === PurchaseState.Canceled) {
+            this.deleteCourse(courseId);
+            return this;
+        }
+        // if (state === PurchaseState.Purchased) {
+        //     this.addCourse(courseId);
+        // }
+        this.courses = this.courses.map((c) => {
+            if ((c._id = courseId)) {
+                c.purchaseState = state;
+                return c;
+            }
+            return c;
+        });
+        this.events.push({
+            topic: AccountChangedCourse.topic,
+            data: {
+                courseId: courseId,
+                userId: this._id,
+                state: state,
+            },
+        });
+        return this;
+    }
+
+    public getPuiblicProfile() {
+        return {
+            email: this.email,
+            displayName: this.displayName,
+            role: this.role,
+        };
     }
     public async SetPassword(password: string) {
         const salt = await genSalt(10);
@@ -23,5 +73,9 @@ export class UserEntity implements IUser {
 
     public ValidatePassword(password: string) {
         return compare(password, this.passwordHash);
+    }
+
+    public UpdateProfile(displayName: string) {
+        this.displayName = displayName;
     }
 }
