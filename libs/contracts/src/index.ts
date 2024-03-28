@@ -8,3 +8,4 @@ export * from "./lib/payments/payment.generate-link";
 export * from "./lib/payments/payment.check";
 export * from "./lib/account/account.buy-course";
 export * from "./lib/account/account.check-payment";
+export * from "./lib/account/account.changed-course";
